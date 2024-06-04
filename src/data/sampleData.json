@@ -1,0 +1,128 @@
+{
+  "dealstats": [
+    {
+      "title": "Red Deals",
+      "number": 53,
+      "amount": "160.1bn",
+      "chartData": [23, 60, 23, 43, 12, 63],
+      "style": "#D12134"
+    },
+    {
+      "title": "Amber Deals",
+      "number": 33,
+      "amount": "251.1bn",
+      "chartData": [1, 2, 5, 60, 23, 43],
+      "style": "#DB8A00"
+    },
+    {
+      "title": "Green Deals",
+      "number": 35,
+      "amount": "340.3bn",
+      "chartData": [1, 2, 23, 43, 12, 9],
+      "style": "#298729"
+    },
+    {
+      "title": "Total Deals",
+      "number": 75,
+      "amount": "340.3bn",
+      "chartData": [2, 23, 49, 72, 32],
+      "style": "#237CBF"
+    }
+  ],
+  "industries": {
+    "labels": [
+      "On grid Power",
+      "Off Grid Power",
+      "Agric. Infra",
+      "Gas",
+      "Transport",
+      "Input to Infra",
+      "Afforable Housing",
+      "Education Infra",
+      "Healthcare",
+      "Water/Waste",
+      "ICT/Telecoms"
+
+    ],
+    "datasets": [
+      {
+        "label": "Red",
+        "backgroundColor": "#D12134",
+        "data": [520, 724, 465, 422, 949, 698, 574,123,439, 874, 400]
+      },
+      {
+        "label": "Amber",
+        "backgroundColor": "#DB8A00",
+        "data": [422, 949, 698, 520, 724, 465, 600, 500, 438, 830, 440]
+      },
+      {
+        "label": "Green",
+        "backgroundColor": "#298729",
+        "data": [520, 724, 465, 520, 724, 465, 660, 499, 299, 400, 700]
+      }
+    ]
+  },
+  "cumulative": {
+    "labels": ["Mandate", "Credit Approval", "Fee Letter", "Financial close"],
+    "datasets": [
+      {
+        "label": "Red",
+        "backgroundColor": "#D12134",
+        "data": [1940, 1848, 843, 840]
+      },
+      {
+        "label": "Amber",
+        "backgroundColor": "#DB8A00",
+        "data": [422, 949, 698, 2170]
+      },
+      {
+        "label": "Green",
+        "backgroundColor": "#298729",
+        "data": [520, 724, 465, 382]
+      }
+    ]
+  }, 
+ 
+  "pastel": {
+    "labels": ["2010", "2014", "2018", "2022", "2023"],
+    "datasets": [
+      {
+        "label": "",
+        "backgroundColor": "#DF2E38",
+        "data": [940, 848, 232, 234, 499]
+      },
+      {
+        "label": "",
+        "backgroundColor": "#ffd966",
+        "data": [422, 949, 534, 774, 876]
+      }
+    ]
+  },
+ 
+  "pastelClone": {
+    "labels": ["2019", "2020", "2021", "2022", "2023"],
+    "datasets": [
+      {
+        "label": "Data",
+        "backgroundColor": ["#6f42c1", "#007bff","#0dcaf0","#17a2b8", "#00cccc" ],
+        "data": [940, 848, 232, 234, 499]
+      }
+    ]
+  },
+ 
+  "pastelClone2": {
+    "labels": ["2019", "2020", "2021", "2022", "2023"],
+    "datasets": [
+      {
+        "label": "",
+        "backgroundColor": "#6f42c1",
+        "data": [940, 848, 232, 234, 499]
+      },
+      {
+        "label": "",
+        "backgroundColor": "#007bff",
+        "data": [422, 949, 534, 774, 876]
+      }
+    ]
+  }
+}

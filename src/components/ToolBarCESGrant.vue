@@ -1,0 +1,163 @@
+<script setup>
+import { ref, watch } from 'vue';
+const props = defineProps({
+    totalValue: {
+        type: [String, Number],
+        default: 0,
+    },
+    pageNum: {
+        type: [String, Number],
+        default: 0,
+    },
+    pageCounts: {
+        type: [String, Number],
+        default: 0,
+    }, 
+    firstVal: {
+        type: [String, Number],
+        default: 0,
+    },
+    lastVal: {
+        type: [String, Number],
+        default: 0,
+    },
+});
+const emit = defineEmits(["searchValues", "filterOptions", "filterOptions2", "pageDetails", "emitSelectedFilter3Option", "createGrant"])
+const emitSearchValues = (isCorrects) => {
+    emit("searchValues", isCorrects)
+}
+
+const emitSelectedFilterOption = (isCorrects) => {
+    emit("filterOptions", isCorrects)
+}
+
+const emitSelectedFilter2Option = (isCorrects) => {
+    emit("filterOptions2", isCorrects)
+}
+const emitSelectedFilter3Option = (isCorrects) => {
+    emit("pageDetails", isCorrects)
+}
+const emitSelectedModalOption = (isCorrects) => {
+    emit("createGrant", isCorrects)
+}
+const searchValue = ref('')
+const selectedValue = ref('All')
+const selectedValue2 = ref('All')
+const selectedValue3 = ref('All')
+const selectedValue4 = ref('All')
+const pageNumber = ref('')
+
+watch(() => props.pageNum, (first, second) => {
+    pageNumber.value = props.pageNum
+});
+watch(() => props.pageCounts, (first, second) => {
+    pageNumber.value = props.pageNum
+});
+</script>
+
+
+<template>
+    <div class="d-flex justify-content-between align-items-center">
+        <h5> Grant Utilization</h5>
+        <div class="d-flex gap-1 pl-2" style="background-color: white;">
+           
+            <!-- <div class="dropdown"><span style="font-size: 11px; margin: 0px 5px;">Sector</span>
+                <button class="btn btn-secondary dropdown-toggle btn-light btn-generic" type="button"
+                    id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    {{ selectedValue3 }}
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style="font-size: 11px;">
+                    <li><a class="dropdown-item" href="#" @click="emitSelectedFilter2Option(''); selectedValue3 = 'All'">All
+                        </a></li>
+                    <li><a class="dropdown-item" href="#"
+                            @click="emitSelectedFilter2Option('Clean Energy'); selectedValue3 = 'Clean Energy'">Clean Energy</a></li>
+                    <li><a class="dropdown-item" href="#"
+                            @click="emitSelectedFilter2Option('CRG'); selectedValue3 = 'CRG'">CRG</a></li>
+                    <li><a class="dropdown-item" href="#"
+                            @click="emitSelectedFilter2Option('Housing'); selectedValue3 = 'Housing'">Housing</a></li>
+                    <li><a class="dropdown-item" href="#"
+                            @click="emitSelectedFilter2Option('Other'); selectedValue3 = 'Other'">Other</a></li>
+                </ul>
+            </div>
+
+                        
+            <div class="dropdown"><span style="font-size: 11px; margin: 0px 5px;">Category</span>
+                <button class="btn btn-secondary dropdown-toggle btn-light btn-generic" type="button"
+                    id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    {{ selectedValue4 }}
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style="font-size: 11px;">
+                    <li><a class="dropdown-item" href="#" @click="emitSelectedFilter3Option(''); selectedValue4 = 'All'">All
+                        </a></li>
+                    <li><a class="dropdown-item" href="#"
+                            @click="emitSelectedFilter3Option('Mini-Grid '); selectedValue4 = 'Mini-Grid '">Mini-Grid </a></li>
+                    <li><a class="dropdown-item" href="#"
+                            @click="emitSelectedFilter3Option('Interconnected Grid'); selectedValue4 = 'Interconnected Grid'">Interconnected Grid</a></li>
+                    <li><a class="dropdown-item" href="#"
+                            @click="emitSelectedFilter3Option('Mesh Grid'); selectedValue4 = 'Mesh Grid'">Mesh Grid</a></li>
+                    <li><a class="dropdown-item" href="#"
+                            @click="emitSelectedFilter3Option('C & I'); selectedValue4 = 'C & I'">C & I</a></li>
+                    <li><a class="dropdown-item" href="#"
+                            @click="emitSelectedFilter3Option('Stand-alone for Home and Business'); selectedValue4 = 'Stand-alone for Home and Business'">Stand-alone for Home and Business</a></li>
+                    <li><a class="dropdown-item" href="#"
+                            @click="emitSelectedFilter3Option('Productive Use Equipment'); selectedValue4 = 'Productive Use Equipment'">Productive Use Equipment</a></li>
+                    <li><a class="dropdown-item" href="#"
+                            @click="emitSelectedFilter3Option('Battery as a Service'); selectedValue4 = 'Battery as a Service'">Battery as a Service</a></li>
+                    <li><a class="dropdown-item" href="#"
+                            @click="emitSelectedFilter3Option('SHS'); selectedValue4 = 'SHS'">SHS</a></li>
+                    <li><a class="dropdown-item" href="#"
+                            @click="emitSelectedFilter3Option('Stand-alone for Telecommunication Towers'); selectedValue4 = 'Stand-alone for Telecommunication Towers'">Stand-alone for Telecommunication Towers</a></li>
+                </ul>
+            </div> -->
+            <v-btn size="x-small" color="#298729" @click="emitSelectedModalOption(true)">
+            <v-icon>mdi-plus</v-icon>
+            Add Grant
+        </v-btn>
+        </div>
+       
+    </div>
+</template>
+
+<style scoped>
+.btn-generic {
+    border-radius: 5px;
+    border: 1px solid #EEE;
+    background: #FFF;
+    font-size: 12px;
+    line-height: 14.4px;
+    padding: 10px;
+}
+.v-btn {
+  min-width: 0;
+  width: 100px;
+  height: 30px;
+}
+.search-bar {
+    width: 25%;
+}
+
+.disabled {
+    color: grey;
+    text-decoration: none;
+    cursor: default;
+}
+
+.input-group input::placeholder {
+    font-size: 12px;
+    line-height: 14.4px;
+}
+
+.search-bar span,
+.navigation {
+    cursor: pointer;
+}
+
+.btns{
+
+}
+
+.navigation {
+    margin-bottom: -10px;
+    margin-top: -10px;
+}
+</style>

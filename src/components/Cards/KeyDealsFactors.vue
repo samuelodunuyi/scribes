@@ -1,0 +1,270 @@
+<script setup>
+import { ref, watch, computed } from 'vue';
+import trmsService from '../../services/trmsService';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+import { useDashOptionStore } from "../../stores/dashOption"
+import pinia from "../../stores/store";
+const props = defineProps(['column', 'button', 'notEdit', 'selectedDealDetails', "newLine"])
+const stores = useDashOptionStore(pinia);
+const emit = defineEmits(["close"])
+const emitSelectedButton = (isCorrects) => {
+    emit("close", isCorrects)
+}
+const KeyDealsFactorsLines = ref([])
+const factors = ref('')
+const yes_No = ref('')
+const concerns = ref('')
+const expectedDate = ref('')
+const loading = ref(false)
+const disableCancel = ref(false)
+const disableDeleteButton = ref(false)
+const resp_Party = ref('')
+const status = ref('')
+const dialog = ref(false)
+const keyTransactionIssues = ref('')
+
+
+
+const removeLine = async (dealId, id) => {
+    let ps = await trmsService.deleteDealsKeyDealFactors(dealId, id)
+    disableDeleteButton.value = true
+
+    if (ps == 200) {
+        disableDeleteButton.value = false
+    }
+    setTimeout(async () => {
+        disableDeleteButton.value = false
+    }, 1300);
+    KeyDealsFactorsLines.value = await trmsService.getDealsKeyDealFactorsByDealId(dealId)
+}
+const clearModal = () => {
+    factors.value = ''
+    concerns.value = ''
+    yes_No.value = ''
+    expectedDate.value = ''
+    resp_Party.value = ''
+    status.value = ''
+    keyTransactionIssues.value = ''
+}
+const creatKeyDealFactors = async () => {
+    loading.value = true
+    disableCancel.value = true
+    let ps = await trmsService.createDealsKeyDealFactors(props.selectedDealDetails.dealId, factors.value, yes_No.value, concerns.value, expectedDate.value, resp_Party.value, status.value, keyTransactionIssues.value, stores.signedInUserEmail, stores.signedInUserEmail, new Date().toJSON(), new Date().toJSON())
+    if (ps == true) {
+        toast.success('Key Deal Factor Added Successfully')
+        setTimeout(async () => {
+            emitSelectedButton(false)
+            dialog.value = false
+            loading.value = false
+        }, 1300);
+        KeyDealsFactorsLines.value = await trmsService.getDealsKeyDealFactorsByDealId(props.selectedDealDetails.dealId)
+        disableCancel.value = false
+        clearModal()
+    } else {
+        toast.error('An error Occured, Please try again')
+        setTimeout(async () => {
+            loading.value = false
+        }, 1300);
+        disableCancel.value = false
+    }
+}
+
+const editLine = async (values) => {
+    let ps = await trmsService.editDealsKeyDealFactors(values.dealId, values.id, values.factors, values.yesNo, values.concern, values.expectedDate, values.responsibleParty, values.status, values.keyTransactionIssues, values.createdBy, stores.signedInUserEmail, values.createdDate, new Date().toJSON())
+    if (ps == 200) {
+        KeyDealsFactorsLines.value = await trmsService.getDealsKeyDealFactorsByDealId(values.dealId)
+        toast.success('Edit Successful')
+    }
+}
+
+watch(() => props.newLine, (first, second) => {
+    if (props.newLine == true) {
+        dialog.value = props.newLine
+    }
+});
+
+watch(() => props.selectedDealDetails, async (first, second) => {
+    if (JSON.stringify(first) !== JSON.stringify(second)) {
+        let deals = props.selectedDealDetails
+        if (deals != undefined) {
+            KeyDealsFactorsLines.value = await trmsService.getDealsKeyDealFactorsByDealId(deals.dealId)
+        }
+    }
+});
+
+
+</script>
+<template>
+    <div>
+        <v-dialog v-model="dialog" width="564" height="560" transition="dialog-right-transition"
+            @click:outside="dialog = false; emitSelectedButton(false)">
+            <v-card id="style-4">
+                <v-card-title>
+                    <div class="d-flex justify-content-between mt-3">
+                        <span class="text-h5 ml-5">Add New Key Deal Factor</span>
+                        <p class="mr-5" style="cursor: pointer;" @click="dialog = false; emitSelectedButton(false)">X</p>
+                    </div>
+                </v-card-title>
+                <v-card-text>
+                    <v-container style="margin-top: -30px">
+                        <div class="row g-2">
+                            <div :class="column">
+                                <label class="form-label">Factors </label>
+                                <input type="text" class="form-control" v-model="factors" :disabled="notEdit">
+                            </div>
+                            <div :class="column">
+                                <label class="form-label">Yes/No </label>
+                                <select class="form-select" v-model="yes_No" :disabled="notEdit">
+                                    <option :value=false>No</option>
+                                    <option :value=true>Yes</option>
+                                </select>
+                            </div>
+                            <div :class="column">
+                                <label class="form-label">Concerns </label>
+                                <select class="form-select" v-model="concerns" :disabled="notEdit">
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </div>
+                            <div :class="column">
+                                <label class="form-label"> Expected Date </label>
+                                <input type="date" class="form-control" v-model="expectedDate" :disabled="notEdit">
+                            </div>
+
+                            <div :class="column">
+                                <label class="form-label">Resp. Party </label>
+                                <input type="text" class="form-control" v-model="resp_Party" :disabled="notEdit">
+                            </div>
+                            <div :class="column">
+                                <label class="form-label">Status </label>
+                                <input type="text" class="form-control" v-model="status" :disabled="notEdit">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Key Transaction Issues </label>
+                                <textarea class="form-control" rows="5" style="resize: none;" :disabled="notEdit"
+                                    v-model="keyTransactionIssues"></textarea>
+                            </div>
+                        </div>
+                    </v-container>
+                    <div class="mt-4 d-flex justify-content-end gap-2">
+                        <v-btn class="rfqbtn" @click="creatKeyDealFactors()" :loading="loading" :disabled="notEdit">Create</v-btn>
+                        <v-btn class="rfqbtn" @click="dialog = false; emitSelectedButton(false)"
+                            :disabled="disableCancel">Cancel</v-btn>
+                    </div>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
+
+        <form>
+            <div class="row g-2 mb-2 pb-2" v-for="i in KeyDealsFactorsLines" :key="i.id">
+
+                <div :class="column">
+                    <label class="form-label">Factors </label>
+                    <input type="text" class="form-control" v-model="i.factors" :disabled="notEdit">
+                </div>
+                <div :class="column">
+                    <label class="form-label">Yes/No </label>
+                    <select class="form-select" v-model="i.yesNo" :disabled="notEdit">
+                        <option :value=false>No</option>
+                        <option :value=true>Yes</option>
+                    </select>
+                </div>
+                <div :class="column">
+                    <label class="form-label">Concerns </label>
+                    <select class="form-select" v-model="i.concern" :disabled="notEdit">
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+                <div :class="column">
+                    <label class="form-label"> Expected Date </label>
+                    <input type="date" class="form-control" :value="i.expectedDate.slice(0, 10).replace(/-/g, '-')"
+                        @input="i.expectedDate = $event.target.value" :disabled="notEdit">
+                </div>
+
+                <div :class="column">
+                    <label class="form-label">Resp. Party </label>
+                    <input type="text" class="form-control" v-model="i.responsibleParty" :disabled="notEdit">
+                </div>
+                <div :class="column">
+                    <label class="form-label">Status </label>
+                    <input type="text" class="form-control" v-model="i.status" :disabled="notEdit">
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Key Transaction Issues </label>
+                    <textarea class="form-control" rows="3" style="resize: none;" v-model="i.keyTransactionIssues"
+                        :disabled="notEdit"></textarea>
+                </div>
+                <small>Last Modified By: {{ i.lastModifiedBy }} at {{ i.lastModifiedDate }}</small>
+
+                <div class="editdeleteadd">
+                    <div class="d-flex justify-content-end mt-2">
+                        <span class="mr-2 d-flex align-center" style="color: #0a38a3;" @click="editLine(i)">
+                            Edit/Save <v-icon icon="mdi-file-document-edit"></v-icon>
+                        </span>
+                        <span class="d-flex align-center" style="color: #F00;" @click="removeLine(i.dealId, i.id)">
+                            Delete <v-icon icon="mdi-trash-can-outline"></v-icon>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</template>
+
+
+<style scoped>
+label.form-label {
+    /* Capion Bold */
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 14.4px;
+}
+
+.rfqbtn {
+    font-family: 'Inter';
+    font-size: 14px;
+    color: #FFFFFF;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    height: 35px;
+    background: #3949AB;
+    border-radius: 10px;
+    text-transform: none;
+}
+
+span {
+    cursor: pointer;
+}
+
+.rfqbtn:hover {
+    color: #000000;
+    width: 80px;
+    height: 35px;
+    border: 1px solid #3949AB;
+    background: #ffffff;
+    transition: 0.7s;
+}
+
+
+.editdeleteadd {
+
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 14.4px;
+    /* 120% */
+}
+
+input,
+select {
+    padding: 10px 20px 10px 10px;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 14.4px;
+}
+</style>
